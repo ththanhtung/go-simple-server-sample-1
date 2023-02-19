@@ -58,3 +58,19 @@ func (s *Server) GetShoppingItems() http.HandlerFunc{
 	}
 }
 
+func (s *Server) RemoveShoppingItem() http.HandlerFunc{
+	return func(w http.ResponseWriter, r *http.Request) {
+		idStr, _ := mux.Vars(r)["id"]
+		id, err := uuid.Parse(idStr)
+		if (err != nil){
+			http.Error(w,err.Error(),http.StatusBadRequest)
+		}
+
+		for i, item := range s.shoppingItems {
+			if (item.ID == id){
+				s.shoppingItems = append(s.shoppingItems[:i], s.shoppingItems[i+1:]...)
+				break
+			}
+		}
+	}
+}
